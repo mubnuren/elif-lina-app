@@ -1,24 +1,20 @@
-# Elif Lina - Günlük Sorumluluk Programı
+# Elif Lina - Günlük Sorumluluk Programı V1.1
 
-Elif Lina için hazırlanmış çocuk dostu günlük sorumluluk, yıldız, rozet, ödül ve ebeveyn takip uygulamasının deploy'a hazır MVP sürümüdür.
+Bu paket, Elif Lina uygulamasının V1.1 iyileştirme sürümüdür.
 
-## İçerik
+## V1.1 Yenilikleri
 
-- Çocuk girişi ve ebeveyn girişi
-- Günlük görev takibi
-- Görev tamamlama / yıldız kazanma
-- Ebeveyn panelinden görev ekleme, düzenleme ve silme
-- Ödül ekleme, düzenleme ve silme
-- Rozetler ve başarılar ekranı
-- Mini oyun ekranları
-- Macera haritası
-- Haftalık takip ve performans grafiği
-- Profil ve ayarlar ekranı
-- Tarayıcı localStorage kayıt sistemi
-- Mobil uyumlu responsive tasarım
-- PWA manifest dosyası
-- Vercel deploy ayarı
-- Standalone HTML önizleme dosyası
+- Daha sevimli özel Elif Lina SVG avatarı
+- Daha güçlü çocuk ana ekranı
+- Daha iyi macera haritası görünümü
+- Günlük görev / yıldız / ödül sistemi
+- Bugünü Kaydet sistemi
+- Haftalık takip ve rapor ekranı
+- Ebeveyn panelinde görev ekleme, düzenleme ve silme
+- Ebeveyn panelinde ödül ekleme, düzenleme ve silme
+- Profil ve ayarlar ekranları
+- Mobil uyum iyileştirmeleri
+- Vercel deploy ayarları
 
 ## Yerelde çalıştırma
 
@@ -27,24 +23,13 @@ npm install
 npm run dev
 ```
 
-Tarayıcıda Vite'ın verdiği yerel adresi açın.
-
 ## Yayına alma
 
-Vercel için hazırdır.
-
-```bash
-npm run build
-```
-
-Vercel ayarları:
+Vercel otomatik ayarları:
 
 - Framework: Vite
-- Build Command: `npm run build`
-- Output Directory: `dist`
+- Build Command: npm run build
+- Output Directory: dist
+- Install Command: npm install
 
-Detaylı anlatım için `DEPLOYMENT.md` dosyasına bakın.
-
-## Kullanım notu
-
-Bu sürüm MVP prototiptir. Veriler şimdilik tarayıcı hafızasında tutulur. Gerçek kullanıcı hesabı, veritabanı, bildirim, çoklu çocuk profili ve gerçek mini oyun mekanikleri sonraki fazda eklenebilir.
+GitHub reposuna bu dosyalar yüklendiğinde Vercel otomatik olarak yeniden deploy eder.

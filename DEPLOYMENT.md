@@ -1,43 +1,22 @@
-# Elif Lina - Yayına Alma Rehberi
+# Vercel Güncelleme Notu
 
-## 1. Vercel ile hızlı yayın
+Bu proje mevcut `elif-lina-app` reposunun üstüne yüklenebilir.
 
-1. https://vercel.com adresine giriş yapın.
-2. `Add New Project` seçin.
-3. Bu proje klasörünü GitHub'a yüklediyseniz repoyu seçin.
-4. Framework Preset: `Vite` olmalı.
-5. Build Command: `npm run build`
-6. Output Directory: `dist`
-7. Deploy butonuna basın.
+## Güncelleme yöntemi
 
-## 2. ZIP üzerinden GitHub'a yükleme
+1. ZIP dosyasını açın.
+2. İçindeki dosya ve klasörlerin tamamını seçin.
+3. GitHub'da mevcut `elif-lina-app` reposuna gidin.
+4. `Add file > Upload files` seçin.
+5. Dosyaları sürükleyip bırakın.
+6. Aynı isimli dosyalar için overwrite/güncelleme yapılır.
+7. `Commit changes` butonuna basın.
+8. Vercel otomatik olarak yeni deploy başlatır.
 
-1. ZIP dosyasını bilgisayarda açın.
-2. GitHub'da yeni repo oluşturun. Örnek: `elif-lina-app`.
-3. Klasör içeriğini repoya yükleyin.
-4. Vercel'de bu repoyu import edin.
+## Kontrol
 
-## 3. Yerelde çalıştırma
+Deploy tamamlandıktan sonra canlı link:
 
-```bash
-npm install
-npm run dev
-```
+https://elif-lina-app.vercel.app
 
-## 4. Canlıya almadan önce kontrol listesi
-
-- Giriş ekranı açılıyor mu?
-- Çocuk panelinde görev tamamlanınca yıldız artıyor mu?
-- Ebeveyn panelinde görev ekleme/düzenleme/silme çalışıyor mu?
-- Ödül ekleme/düzenleme/silme çalışıyor mu?
-- `Bugünü Kaydet ve Yeni Güne Başla` butonu haftalık kayıt oluşturuyor mu?
-- Mobil görünümde menüler okunaklı mı?
-
-## 5. Sonraki faz
-
-- Gerçek kullanıcı hesabı
-- Veritabanı bağlantısı
-- Çoklu çocuk profili
-- Bildirim sistemi
-- Gerçek mini oyun mekanikleri
-- Domain bağlantısı
+üzerinden kontrol edilir.
