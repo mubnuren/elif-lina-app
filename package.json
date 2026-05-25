@@ -1,9 +1,9 @@
 {
-  "name": "elif-lina-v30-pixel-perfect",
-  "version": "3.0.0",
+  "name": "elif-lina-v40-true-mockup",
+  "version": "4.0.0",
   "private": true,
   "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp -R index.html styles.css app.js public dist/",
+    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/index.html && cp -R src dist/src && cp -R public dist/public",
     "start": "python3 -m http.server 5173"
   },
   "dependencies": {},

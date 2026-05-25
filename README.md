@@ -1,10 +1,10 @@
-# Elif Lina V3.0 Pixel Perfect
+# Elif Lina V4.0 True Mockup
 
-Bu sürüm, önceki tasarım mockup'larına daha yakın, bağımlılıksız ve Vercel uyumlu statik uygulama paketidir.
+Daha önceki tasarım kolajına daha yakın, yoğun, renkli ve stabil statik sürüm.
 
-## Yayına alma
-GitHub reposuna dosyaları yükleyin. Vercel otomatik olarak build alır.
-
-- Install Command: `echo No dependencies`
+## Vercel
 - Build Command: `npm run build`
 - Output Directory: `dist`
+- Install Command: `npm install`
+
+Dış bağımlılık yoktur. `package-lock.json` özellikle temiz bırakılmıştır.
