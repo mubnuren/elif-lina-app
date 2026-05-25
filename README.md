@@ -1,8 +1,8 @@
-# Elif Lina - Günlük Sorumluluk Programı V1.1
+# Elif Lina - Günlük Sorumluluk Programı V1.2
 
-Bu paket, Elif Lina uygulamasının V1.1 iyileştirme sürümüdür.
+Bu paket, Elif Lina uygulamasının V1.2 iyileştirme sürümüdür.
 
-## V1.1 Yenilikleri
+## V1.2 Yenilikleri
 
 - Daha sevimli özel Elif Lina SVG avatarı
 - Daha güçlü çocuk ana ekranı
@@ -33,3 +33,12 @@ Vercel otomatik ayarları:
 - Install Command: npm install
 
 GitHub reposuna bu dosyalar yüklendiğinde Vercel otomatik olarak yeniden deploy eder.
+
+
+## V1.2 Notları
+
+- Premium ana karşılama bannerı eklendi.
+- Çocuk panelinde görsel yoğunluk ve oyun hissi artırıldı.
+- Macera haritası daha canlı ve hikâyeli hale getirildi.
+- V1.2 localStorage anahtarları kullanıldığı için kullanıcılar güncel varsayılan veriyi temiz şekilde görür.
+- Mobil uyum için ek düzenlemeler yapıldı.

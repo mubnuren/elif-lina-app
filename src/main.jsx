@@ -29,8 +29,8 @@ const defaultProfile = {
   level: 4,
   xp: 320,
   xpTarget: 500,
-  totalStars: 125,
-  streak: 7,
+  totalStars: 128,
+  streak: 8,
   dailyLimit: 50,
   chestTarget: 30,
   reminder: '20:00'
@@ -69,11 +69,11 @@ const pct = (a, b) => b ? Math.round((a / b) * 100) : 0;
 const cls = (...parts) => parts.filter(Boolean).join(' ');
 
 function App() {
-  const [tasks, setTasks] = useLS('elifLinaTasksV11', defaultTasks);
-  const [rewards, setRewards] = useLS('elifLinaRewardsV11', defaultRewards);
-  const [profile, setProfile] = useLS('elifLinaProfileV11', defaultProfile);
-  const [history, setHistory] = useLS('elifLinaHistoryV11', defaultHistory);
-  const [session, setSession] = useLS('elifLinaSessionV11', { loggedIn: false, role: 'child' });
+  const [tasks, setTasks] = useLS('elifLinaTasksV12', defaultTasks);
+  const [rewards, setRewards] = useLS('elifLinaRewardsV12', defaultRewards);
+  const [profile, setProfile] = useLS('elifLinaProfileV12', defaultProfile);
+  const [history, setHistory] = useLS('elifLinaHistoryV12', defaultHistory);
+  const [session, setSession] = useLS('elifLinaSessionV12', { loggedIn: false, role: 'child' });
   const [page, setPage] = useState('dashboard');
 
   const activeTasks = tasks.filter((t) => t.active);
@@ -212,7 +212,7 @@ function Sidebar({ profile, role, setRole, page, setPage, onLogout }) {
 }
 
 function Topbar({ profile, role, setRole }) {
-  return <header className="topbar"><div><h1>Merhaba {profile.childName}! 👋</h1><p>Bugün harika işler seni bekliyor.</p></div><div className="top-stats"><Pill icon="⭐" label="Toplam Yıldız" value={profile.totalStars}/><Pill icon="🛡️" label="Seviye" value={profile.level}/><Pill icon="🔥" label="Günlük Seri" value={profile.streak}/><button className="bell">🔔<i>3</i></button><select value={role} onChange={(e) => setRole(e.target.value)}><option value="child">Çocuk Paneli</option><option value="parent">Ebeveyn Paneli</option></select></div></header>;
+  return <header className="topbar"><div><h1>Merhaba {profile.childName}! 👋</h1><p>Bugün harika işler seni bekliyor.</p></div><div className="top-stats"><span className="version-badge">V1.2 Premium</span><Pill icon="⭐" label="Toplam Yıldız" value={profile.totalStars}/><Pill icon="🛡️" label="Seviye" value={profile.level}/><Pill icon="🔥" label="Günlük Seri" value={profile.streak}/><button className="bell">🔔<i>3</i></button><select value={role} onChange={(e) => setRole(e.target.value)}><option value="child">Çocuk Paneli</option><option value="parent">Ebeveyn Paneli</option></select></div></header>;
 }
 function Pill({ icon, label, value }) { return <div className="pill"><span>{icon}</span><small>{label}</small><b>{value}</b></div>; }
 
@@ -230,6 +230,7 @@ function ChildArea(props) {
 function ChildDashboard({ profile, tasks, rewards, history, completion, completed, earnedToday, weeklyStars, onToggle, onFinishDay, setPage }) {
   return (
     <div className="dashboard-grid">
+      <HeroWelcome profile={profile} completion={completion} completed={completed} total={tasks.length} earnedToday={earnedToday} setPage={setPage} />
       <ProgressCard completion={completion} completed={completed} total={tasks.length} />
       <ChestCard stars={earnedToday} target={profile.chestTarget} />
       <MotivationCard />
@@ -241,6 +242,34 @@ function ChildDashboard({ profile, tasks, rewards, history, completion, complete
       <FeatureStrip />
       <div className="action-banner"><span>🏆</span><div><b>Elif Lina ile her gün daha iyiye!</b><small>Görevleri tamamla, yıldızlarını topla, ödülleri kazan.</small></div><button onClick={onFinishDay}>Bugünü Kaydet</button></div>
     </div>
+  );
+}
+
+
+function HeroWelcome({ profile, completion, completed, total, earnedToday, setPage }) {
+  return (
+    <section className="hero-welcome card">
+      <div className="hero-copy">
+        <span className="soft-label">Bugünün macerası başladı ✨</span>
+        <h2>Merhaba {profile.childName}! Bugün yıldızları toplamaya hazır mısın?</h2>
+        <p>Görevlerini tamamla, macera haritasında ilerle ve sürpriz kutuya bir adım daha yaklaş.</p>
+        <div className="hero-actions">
+          <button className="primary" onClick={() => setPage('tasks')}>Görevlerime Git</button>
+          <button className="secondary" onClick={() => setPage('map')}>Haritayı Aç</button>
+        </div>
+      </div>
+      <div className="hero-visual">
+        <ElifAvatar size="xl" />
+        <div className="floating-star one">⭐</div>
+        <div className="floating-star two">🎁</div>
+        <div className="floating-star three">🏰</div>
+      </div>
+      <div className="hero-mini-stats">
+        <div><b>{completion}%</b><small>İlerleme</small></div>
+        <div><b>{completed}/{total}</b><small>Görev</small></div>
+        <div><b>+{earnedToday}</b><small>Yıldız</small></div>
+      </div>
+    </section>
   );
 }
 
@@ -258,7 +287,7 @@ function WeeklyMini({ history, weeklyStars, setPage }) { return <section classNa
 function FeatureStrip() { return <section className="feature-strip"><MiniBenefit icon="🛡️" title="Sorumluluk Bilinci" text="Görevleri tamamla" /><MiniBenefit icon="⭐" title="Motivasyon Artar" text="Yıldızlarla destek" /><MiniBenefit icon="🎮" title="Eğlenceli Öğrenme" text="Oyunlarla keşfet" /><MiniBenefit icon="⏰" title="Zaman Yönetimi" text="Planlı olmayı öğrenir" /><MiniBenefit icon="🏆" title="Özgüven Gelişimi" text="Başardıkça güçlenir" /><MiniBenefit icon="👨‍👩‍👧" title="Aile Bağı Güçlenir" text="Birlikte takip" /></section>; }
 
 function AdventureMap() {
-  return <div className="adventure"><div className="sky"></div><div className="mountains">🏔️</div><div className="castle">🏰</div><svg viewBox="0 0 420 240" preserveAspectRatio="none"><path d="M20 198 C92 116 128 221 186 128 C239 42 308 118 390 52" fill="none" stroke="#ffd37d" strokeWidth="28" strokeLinecap="round" strokeDasharray="20 18"/><path d="M20 198 C92 116 128 221 186 128 C239 42 308 118 390 52" fill="none" stroke="#fff2c2" strokeWidth="16" strokeLinecap="round" strokeDasharray="14 21"/></svg>{[1,2,3,4,5].map((n, i) => <div key={n} className={`node n${n}`}>{n}</div>)}<div className="chest">🧰</div></div>;
+  return <div className="adventure premium-map"><div className="cloud c1">☁️</div><div className="cloud c2">☁️</div><div className="sun">☀️</div><div className="river"></div><div className="forest f1">🌲🌳</div><div className="forest f2">🌳🌲</div><div className="mountains">🏔️</div><div className="castle">🏰</div><svg viewBox="0 0 420 240" preserveAspectRatio="none"><path d="M28 190 C83 132 126 213 184 128 C246 38 304 121 386 56" fill="none" stroke="#f59e0b" strokeWidth="34" strokeLinecap="round" opacity=".48"/><path d="M28 190 C83 132 126 213 184 128 C246 38 304 121 386 56" fill="none" stroke="#fff2c2" strokeWidth="20" strokeLinecap="round" strokeDasharray="16 18"/></svg>{[1,2,3,4,5].map((n) => <div key={n} className={`node n${n}`}>{n}</div>)}<div className="chest">🎁</div><div className="sparkle s1">✦</div><div className="sparkle s2">★</div></div>;
 }
 
 function TasksPage({ tasks, onToggle, earnedToday, completed, completion, onFinishDay }) { return <section className="page card"><div className="page-head"><div><h2>Bugünkü Görevler</h2><p>Görevleri tamamla, yıldızları topla.</p></div><b>{completed} / {tasks.length} tamamlandı</b></div><div className="task-list big">{tasks.map(t => <TaskRow key={t.id} task={t} onToggle={onToggle} />)}</div><div className="task-total"><span>Günün Toplamı: ⭐ {earnedToday}</span><button className="primary" onClick={onFinishDay}>Bugünü Kaydet</button></div></section>; }
