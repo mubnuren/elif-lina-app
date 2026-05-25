@@ -1,1 +1,11 @@
-{"scripts":{"build":"node build.js","dev":"node server.js"},"dependencies":{},"devDependencies":{}}
+{
+  "name": "elif-lina-v30-pixel-perfect",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp -R index.html styles.css app.js public dist/",
+    "start": "python3 -m http.server 5173"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
