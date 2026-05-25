@@ -1,8 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const dist = path.join(__dirname, 'dist');
-fs.rmSync(dist, { recursive: true, force: true });
-fs.mkdirSync(dist, { recursive: true });
-for (const file of ['index.html','styles.css','app.js']) fs.copyFileSync(path.join(__dirname,file), path.join(dist,file));
-fs.cpSync(path.join(__dirname,'public'), path.join(dist,'public'), { recursive: true });
-console.log('Static build completed.');
+const out='dist';
+fs.rmSync(out,{recursive:true,force:true});
+fs.mkdirSync(out,{recursive:true});
+for (const f of ['index.html','src/styles.css','src/app.js','public/manifest.json','public/icon.svg','vercel.json','README.md']) {
+  const src=path.join(process.cwd(),f); if(!fs.existsSync(src)) continue;
+  const dest=path.join(process.cwd(),out,f.replace(/^src\//,'').replace(/^public\//,''));
+  fs.mkdirSync(path.dirname(dest),{recursive:true}); fs.copyFileSync(src,dest);
+}

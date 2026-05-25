@@ -1,11 +1,1 @@
-{
-  "name": "elif-lina-v40-true-mockup",
-  "version": "4.0.0",
-  "private": true,
-  "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/index.html && cp -R src dist/src && cp -R public dist/public",
-    "start": "python3 -m http.server 5173"
-  },
-  "dependencies": {},
-  "devDependencies": {}
-}
+{"scripts":{"build":"node build.js","start":"python3 -m http.server 3000 -d dist"},"dependencies":{},"devDependencies":{}}

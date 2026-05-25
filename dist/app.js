@@ -1,60 +1,14 @@
-const tasks = [
-  { icon: '📖', title: '15 dk kitap okudun mu?', category: 'Eğitim', points: 2, done: true },
-  { icon: '✏️', title: 'Ödevlerini yaptın mı?', category: 'Eğitim', points: 3, done: true },
-  { icon: '🛏️', title: 'Yatağını topladın mı?', category: 'Düzen', points: 2, done: true },
-  { icon: '🦷', title: 'Dişlerini fırçaladın mı?', category: 'Bakım', points: 1, done: true },
-  { icon: '🧸', title: 'Oyuncaklarını topladın mı?', category: 'Düzen', points: 2, done: false }
-];
-
-const taskList = document.getElementById('taskList');
-const appShell = document.querySelector('.app-shell');
-const modeButtons = document.querySelectorAll('.mode-btn');
-
-function renderTasks(){
-  taskList.innerHTML = tasks.map((task, index) => `
-    <button class="task ${task.done ? 'done' : ''}" data-index="${index}">
-      <span>${task.icon}</span>
-      <span><b>${task.title}</b><small>${task.category}</small></span>
-      <span class="points">+${task.points}⭐</span>
-      <span class="check">✓</span>
-    </button>
-  `).join('');
-  document.querySelectorAll('.task').forEach(button => {
-    button.addEventListener('click', () => {
-      const index = Number(button.dataset.index);
-      tasks[index].done = !tasks[index].done;
-      updateNumbers();
-      renderTasks();
-    });
-  });
-}
-
-function updateNumbers(){
-  const done = tasks.filter(t => t.done).length;
-  const total = tasks.length;
-  const earned = tasks.filter(t => t.done).reduce((sum, t) => sum + t.points, 0);
-  const progress = Math.round((done / total) * 100);
-  document.getElementById('topStars').textContent = 117 + earned;
-  document.getElementById('topDone').textContent = `${done}/${total}`;
-  document.getElementById('heroProgress').textContent = `${progress}%`;
-  document.getElementById('heroDone').textContent = `${done}/${total}`;
-  document.getElementById('heroEarned').textContent = `+${earned}`;
-  document.getElementById('progressText').textContent = `${progress}%`;
-  document.getElementById('progressRing').style.background = `conic-gradient(#24c46b 0 ${progress}%,#e9e1ff 0)`;
-  document.getElementById('completedText').textContent = `${done} / ${total} görev`;
-}
-
-modeButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    modeButtons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    if(btn.dataset.mode === 'parent') appShell.classList.add('parent-mode');
-    else appShell.classList.remove('parent-mode');
-  });
-});
-
-document.getElementById('saveDay').addEventListener('click', () => alert('Bugünün görevleri kaydedildi. Harika iş!'));
-document.getElementById('footerSave').addEventListener('click', () => alert('Bugün kaydedildi. Yıldızların haftalık özete eklendi.'));
-
-renderTasks();
-updateNumbers();
+const tasks=[['📖','15 dk kitap okudun mu?','Eğitim','+2'],['✏️','Ödevlerini yaptın mı?','Eğitim','+3'],['🛏️','Yatağını topladın mı?','Düzen','+2'],['🦷','Dişlerini fırçaladın mı?','Bakım','+1'],['🧸','Oyuncaklarını topladın mı?','Düzen','+2']];
+const rewards=[['🎁','Küçük Sürpriz','10'],['🍦','Dondurma Günü','20'],['🎮','Oyun Saati Bonusu','30'],['🎬','Sinema Günü','50'],['👑','Büyük Ödül','100']];
+const days=[['Pzt','14','19/05'],['Sal','18','20/05'],['Çar','12','21/05'],['Per','20','22/05'],['Cum','21','23/05'],['Cmt','8','24/05'],['Paz','10','25/05']];
+function girl(size='big'){return `<div class="girl ${size}"><div class="bow"><span></span><span></span></div><div class="hair"></div><div class="face"><i></i><i></i><b></b><em></em></div><div class="dress">★</div></div>`}
+function taskRows(){return tasks.map((t,i)=>`<div class="task ${i<4?'done':''}"><span class="ico">${t[0]}</span><div><b>${t[1]}</b><small>${t[2]}</small></div><strong>${t[3]}⭐</strong><button>${i<4?'✓':''}</button></div>`).join('')}
+function rewardRows(){return rewards.map(r=>`<div class="reward"><span>${r[0]}</span><b>${r[1]}</b><strong>${r[2]}⭐</strong></div>`).join('')}
+function dayRows(){return days.map(d=>`<div class="day"><span>⭐</span><b>${d[1]}</b><small>${d[2]}</small></div>`).join('')}
+function menu(){return ['🏠 Ana Sayfa','✅ Görevler','🎮 Mini Oyunlar','🗺️ Macera Haritası','🏅 Rozetler','🎁 Ödüller','📅 Haftalık Takip','👤 Profilim'].map((m,i)=>`<button class="${i==0?'active':''}">${m}</button>`).join('')}
+function gameCards(){return [['🐼','Eşleştirme','Hafıza kartlarını bul','+2'],['⭐','Yıldız Toplama','Uzayda yıldız yakala','+3'],['🎈','Balon Patlatma','Puanlı balonları patlat','+1'],['abc','Kelime Bulmaca','Yeni kelimeler öğren','+2']].map(g=>`<div class="game"><div class="shine">✦</div><span>${g[0]}</span><b>${g[1]}</b><small>${g[2]}</small><button>Oyna</button><em>${g[3]}⭐</em></div>`).join('')}
+function adventure(){return `<div class="mapScene"><div class="cloud c1"></div><div class="cloud c2"></div><div class="castle">🏰</div><div class="mount">⛰️</div><svg viewBox="0 0 760 210" preserveAspectRatio="none"><path d="M20 165 C170 120 240 200 350 150 C465 95 540 180 720 105" stroke="#ffe187" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M20 165 C170 120 240 200 350 150 C465 95 540 180 720 105" stroke="#fff1b5" stroke-width="6" fill="none" stroke-dasharray="28 20" stroke-linecap="round"/></svg>${[1,2,3,4,5].map((n,i)=>`<i class="node n${n}">${n}</i>`).join('')}<div class="treasure">🎁</div></div><div class="mapFoot"><b>Seviye 5: Harika!</b><small>Sonraki hedef: 6. seviye</small><div><span></span></div></div>`}
+function parentPanel(){return `<main class="content parent"><div class="topbar"><h2>Ebeveyn Yönetim Paneli</h2><div class="chips"><span>Bu Hafta</span><span>Elif Lina</span></div></div><div class="parentGrid"><section class="pstats"><div><b>15/20</b><small>Tamamlanan Görev</small></div><div><b>125⭐</b><small>Toplam Yıldız</small></div><div><b>7 gün</b><small>Günlük Seri</small></div><div><b>%82</b><small>Başarı Oranı</small></div></section><section class="panel taskman"><h3>Görev Yönetimi <button>+ Yeni Görev</button></h3>${taskRows()}</section><section class="panel"><h3>Ödül Yönetimi <button>+ Yeni Ödül</button></h3>${rewardRows()}</section><section class="panel chart"><h3>Son 7 Gün Performansı</h3><div class="bars">${[70,90,60,100,85,40,65].map(v=>`<i style="height:${v}%"></i>`).join('')}</div></section><section class="panel notes"><h3>Son Aktiviteler</h3><p>📖 Kitap okuma tamamlandı <b>+2⭐</b></p><p>✅ Tüm görevleri tamamladı <b>+5⭐</b></p><p>🔥 7 günlük seri yaptı <b>+10⭐</b></p></section></div></main>`}
+function childPanel(){return `<main class="content"><div class="topbar"><div><h2>Merhaba Elif Lina! 👋</h2><p>Bugün harika işler seni bekliyor.</p></div><div class="stats"><span>⭐ <b>125</b><small>Toplam</small></span><span>🛡️ <b>4</b><small>Seviye</small></span><span>🔥 <b>7</b><small>Seri</small></span><span>✅ <b>4/5</b><small>Görev</small></span></div></div><section class="hero"><div><label>Bugünün macerası başladı ✨</label><h1>Bugün yıldızları toplamaya hazır mısın?</h1><p>Görevlerini tamamla, macera haritasında ilerle ve sürpriz kutuya bir adım daha yaklaş.</p><button>Görevlerime Git</button><button class="ghost">Haritayı Aç</button></div><div class="heroGirl">${girl('large')}<div class="bubble b1"><b>80%</b><small>İlerleme</small></div><div class="bubble b2"><b>4/5</b><small>Görev</small></div><div class="bubble b3"><b>+8</b><small>Yıldız</small></div></div></section><section class="mainGrid"><div class="card progress"><h3>Bugünkü İlerlemen</h3><div class="ring">80%</div><b>4 / 5 görev</b><small>tamamlandı</small><div class="bar"><span></span></div></div><div class="card chest"><h3>Sürpriz Kutu</h3><div class="chestIcon">🧰</div><b>25 / 30 yıldız</b><small>30 yıldız olduğunda kutunu aç!</small><div class="bar pink"><span></span></div></div><div class="card motivation"><h3>Günlük Motivasyon 🦄</h3><div><span>🦄</span><b>Küçük adımlar, büyük değişimler yaratır! 🌈</b></div></div><div class="card rewards"><h3>Ödüller Dükkanı <button>Tümünü Gör</button></h3>${rewardRows()}</div><div class="card tasks"><h3>Bugünkü Görevlerin <button>Tümünü Gör</button></h3>${taskRows()}<button class="wide">Tüm Görevleri Gör</button></div><div class="card games"><h3>Mini Oyunlar <button>Tümünü Gör</button></h3><div class="gameGrid">${gameCards()}</div></div><div class="card map"><h3>Macera Haritası <button>Tümünü Gör</button></h3>${adventure()}</div><div class="card week"><h3>Haftalık Özet <button>Tümünü Gör</button></h3><div class="days">${dayRows()}</div><div class="total">103⭐<small>haftalık toplam</small></div></div></section><section class="benefits">${[['🛡️','Sorumluluk Bilinci','Görevleri tamamla, alışkanlık kazan.'],['⭐','Motivasyon Artar','Yıldız ve ödüllerle motivasyon yükselir.'],['🎮','Eğlenceli Öğrenme','Oyunlarla öğrenmek daha keyifli.'],['⏰','Zaman Yönetimi','Planlı olmayı öğrenir.'],['🏆','Özgüven Gelişimi','Başardıkça kendine güvenir.'],['👨‍👩‍👧','Aile Bağı Güçlenir','Birlikte takip edin.']].map(b=>`<div><span>${b[0]}</span><b>${b[1]}</b><small>${b[2]}</small></div>`).join('')}</section><footer>🏆 Elif Lina ile her gün daha iyiye! <span>Görevleri tamamla, yıldızlarını topla, ödülleri kazan.</span><button>Bugünü Kaydet</button></footer></main>`}
+function app(){document.getElementById('app').innerHTML=`<div class="shell"><aside><div class="brand"><h1>Elif Lina ⭐</h1><p>Günlük Sorumluluk ve Oyunlaştırma Programı</p>${girl('side')}</div><div class="switch"><button onclick="show('child')">Çocuk</button><button onclick="show('parent')">Ebeveyn</button></div><nav>${menu()}</nav><div class="goal">⭐<b>Günlük hedef</b><small>125 yıldız toplandı</small><button>Çıkış Yap</button></div></aside><div id="screen">${childPanel()}</div></div>`}
+window.show=(mode)=>{document.getElementById('screen').innerHTML=mode==='parent'?parentPanel():childPanel()};app();
