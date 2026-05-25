@@ -1,15 +1,11 @@
 {
+  "name": "elif-lina-v21-static-exact",
+  "version": "2.1.0",
+  "private": true,
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "build": "node build.js",
+    "dev": "node build.js && npx serve dist"
   },
-  "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "lucide-react": "latest"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }
