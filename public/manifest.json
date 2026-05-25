@@ -1,9 +1,9 @@
 {
-  "name": "Elif Lina Günlük Sorumluluk V1.2",
+  "name": "Elif Lina Günlük Sorumluluk",
   "short_name": "Elif Lina",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fff7fb",
+  "background_color": "#f7f0ff",
   "theme_color": "#6d28d9",
-  "icons": [{ "src": "/icon.svg", "sizes": "512x512", "type": "image/svg+xml" }]
+  "icons": [{"src":"/icon.svg","sizes":"512x512","type":"image/svg+xml"}]
 }
