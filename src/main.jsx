@@ -1,179 +1,375 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import {
+  Home,
+  CheckSquare,
+  Gamepad2,
+  Map,
+  Trophy,
+  Gift,
+  CalendarDays,
+  User,
+  Settings,
+  LogOut,
+  Bell,
+  Star,
+  Crown,
+  Flame,
+  ShieldCheck,
+  BarChart3,
+  Plus,
+  Edit3,
+  Trash2,
+  Save,
+  Users,
+  Lock,
+  BookOpen,
+  Clock,
+  Heart,
+  Sparkles,
+  ChevronRight,
+  Download,
+  Menu,
+  X,
+} from 'lucide-react';
 import './styles.css';
 
-const nowDate = () => new Date().toISOString().slice(0, 10);
-const trDate = (d) => new Date(d).toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit' });
-const pct = (a, b) => b ? Math.round((a / b) * 100) : 0;
-
 const defaultTasks = [
-  { id: 1, title: '15 dk kitap okudun mu?', category: 'Eğitim', points: 2, icon: '📚', done: true, active: true, repeat: 'Her gün' },
-  { id: 2, title: 'Ödevlerini yaptın mı?', category: 'Eğitim', points: 3, icon: '✏️', done: true, active: true, repeat: 'Her gün' },
-  { id: 3, title: 'Yatağını topladın mı?', category: 'Düzen', points: 2, icon: '🛏️', done: true, active: true, repeat: 'Her gün' },
-  { id: 4, title: 'Dişlerini fırçaladın mı?', category: 'Bakım', points: 1, icon: '🦷', done: true, active: true, repeat: 'Sabah/Akşam' },
-  { id: 5, title: 'Oyuncaklarını topladın mı?', category: 'Düzen', points: 2, icon: '🧸', done: false, active: true, repeat: 'Her gün' }
+  { id: 1, title: '15 dk kitap okudun mu?', category: 'Eğitim', points: 2, icon: '📖', done: true, period: 'Her gün' },
+  { id: 2, title: 'Ödevlerini yaptın mı?', category: 'Eğitim', points: 3, icon: '✏️', done: true, period: 'Her gün' },
+  { id: 3, title: 'Yatağını topladın mı?', category: 'Düzen', points: 2, icon: '🛏️', done: true, period: 'Her gün' },
+  { id: 4, title: 'Dişlerini fırçaladın mı?', category: 'Kişisel Bakım', points: 1, icon: '🦷', done: true, period: 'Her gün' },
+  { id: 5, title: 'Oyuncaklarını topladın mı?', category: 'Düzen', points: 2, icon: '🧸', done: false, period: 'Her gün' },
 ];
-const defaultRewards = [
-  { id: 1, title: 'Küçük Sürpriz', stars: 10, icon: '🎁', stock: 'Sınırsız', active: true },
-  { id: 2, title: 'Dondurma Günü', stars: 20, icon: '🍦', stock: '2 adet', active: true },
-  { id: 3, title: 'Oyun Saati Bonusu', stars: 30, icon: '🎮', stock: 'Sınırsız', active: true },
-  { id: 4, title: 'Sinema Günü', stars: 50, icon: '🎬', stock: '1 adet', active: true },
-  { id: 5, title: 'Büyük Ödül', stars: 100, icon: '👑', stock: '1 adet', active: true }
+
+const rewardList = [
+  { id: 1, title: 'Küçük Sürpriz', stars: 10, icon: '🎁', status: 'Açık' },
+  { id: 2, title: 'Dondurma Günü', stars: 20, icon: '🍦', status: 'Açık' },
+  { id: 3, title: 'Oyun Saati Bonusu', stars: 30, icon: '🎮', status: 'Açık' },
+  { id: 4, title: 'Sinema Günü', stars: 50, icon: '🎬', status: 'Açık' },
+  { id: 5, title: 'Büyük Ödül', stars: 100, icon: '🎀', status: 'Kilitli' },
 ];
-const defaultHistory = [
-  { date: '2026-05-20', stars: 18, completed: 4, total: 5 },
-  { date: '2026-05-21', stars: 12, completed: 3, total: 5 },
-  { date: '2026-05-22', stars: 20, completed: 5, total: 5 },
-  { date: '2026-05-23', stars: 21, completed: 5, total: 5 },
-  { date: '2026-05-24', stars: 8, completed: 2, total: 5 },
-  { date: '2026-05-25', stars: 10, completed: 4, total: 5 },
-  { date: nowDate(), stars: 0, completed: 0, total: 5 }
+
+const week = [
+  { day: 'Pzt', date: '19/05', score: 14 },
+  { day: 'Sal', date: '20/05', score: 18 },
+  { day: 'Çar', date: '21/05', score: 12 },
+  { day: 'Per', date: '22/05', score: 20 },
+  { day: 'Cum', date: '23/05', score: 21 },
+  { day: 'Cmt', date: '24/05', score: 8 },
+  { day: 'Paz', date: '25/05', score: 10 },
 ];
-const games = [
-  { title: 'Eşleştirme', sub: 'Hafıza kartlarını bul', icon: '🐼', color: 'turq', reward: '+2' },
-  { title: 'Yıldız Toplama', sub: 'Uzayda yıldız yakala', icon: '⭐', color: 'violet', reward: '+3' },
-  { title: 'Balon Patlatma', sub: 'Puanlı balonları patlat', icon: '🎈', color: 'sky', reward: '+1' },
-  { title: 'Kelime Bulmaca', sub: 'Yeni kelimeler öğren', icon: '🔤', color: 'blue', reward: '+2' }
+
+const miniGames = [
+  { title: 'Eşleştirme', desc: 'Hafıza kartlarını bul', icon: '🐼', plus: '+2', color: 'cyan' },
+  { title: 'Yıldız Toplama', desc: 'Uzayda yıldız yakala', icon: '⭐', plus: '+3', color: 'purple' },
+  { title: 'Balon Patlatma', desc: 'Puanlı balonları patlat', icon: '🎈', plus: '+1', color: 'teal' },
+  { title: 'Kelime Bulmaca', desc: 'Yeni kelimeler öğren', icon: 'abc', plus: '+2', color: 'blue' },
 ];
+
 const badges = [
-  { icon: '📖', title: 'Kitap Kurdu', sub: '15 gün okuma', open: true },
-  { icon: '🙌', title: 'Süper Yardımcı', sub: '20 görev', open: true },
-  { icon: '🛏️', title: 'Düzen Şampiyonu', sub: 'Yatak rutini', open: true },
-  { icon: '🔥', title: '7 Gün Seri', sub: 'Seriyi koru', open: true },
-  { icon: '🔒', title: '30 Yıldız Kulübü', sub: 'Kilidi aç', open: false }
+  { name: 'Kitap Kurdu', text: '15 gün kitap okuma', icon: '📚', open: true },
+  { name: 'Süper Yardımcı', text: '20 görev tamamlama', icon: '🖐️', open: true },
+  { name: 'Düzen Şampiyonu', text: 'Yatağını 15 gün toplama', icon: '🛏️', open: true },
+  { name: '3 Gün Seri', text: '3 gün üst üste görevleri bitir', icon: '🥉', open: true },
+  { name: '7 Gün Seri', text: '7 gün üst üste görevleri bitir', icon: '🏅', open: true },
+  { name: '30 Yıldız Kulübü', text: '30 yıldız topla', icon: '🔒', open: false },
 ];
 
-function useLocal(key, initial) {
+function useStoredState(key, fallback) {
   const [value, setValue] = useState(() => {
-    try { const saved = localStorage.getItem(key); return saved ? JSON.parse(saved) : initial; } catch { return initial; }
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch {
+      return fallback;
+    }
   });
-  useEffect(() => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }, [key, value]);
-  return [value, setValue];
+  const save = (next) => {
+    const nextValue = typeof next === 'function' ? next(value) : next;
+    setValue(nextValue);
+    try { localStorage.setItem(key, JSON.stringify(nextValue)); } catch {}
+  };
+  return [value, save];
 }
 
-function Avatar({ big=false, mini=false }) {
-  return <div className={`avatar ${big?'big':''} ${mini?'mini':''}`}><div className="bow">🎀</div><div className="face">👧🏻</div><div className="star-medal">⭐</div></div>;
+function Character({ size = 'big' }) {
+  return (
+    <div className={`character character-${size}`}>
+      <div className="hair hair-left" />
+      <div className="hair hair-right" />
+      <div className="bow"><span /> <span /></div>
+      <div className="face">
+        <div className="eye left" /><div className="eye right" />
+        <div className="cheek left" /><div className="cheek right" />
+        <div className="smile" />
+      </div>
+      <div className="body"><Star size={18} fill="currentColor" /></div>
+    </div>
+  );
 }
-function Ring({ value }) { return <div className="ring" style={{'--p': `${value}%`}}><b>{value}%</b></div>; }
-function Button({children, kind='primary', onClick, type='button'}) { return <button type={type} onClick={onClick} className={`btn ${kind}`}>{children}</button>; }
+
+function ProgressCircle({ value, label }) {
+  return (
+    <div className="progress-circle" style={{ '--p': `${value * 3.6}deg` }}>
+      <div className="progress-inner"><strong>{value}%</strong><span>{label}</span></div>
+    </div>
+  );
+}
+
+function Sidebar({ mode, setMode, active, setActive, onLogout }) {
+  const items = [
+    ['home', 'Ana Sayfa', Home],
+    ['tasks', 'Görevler', CheckSquare],
+    ['games', 'Mini Oyunlar', Gamepad2],
+    ['map', 'Macera Haritası', Map],
+    ['badges', 'Rozetler', Trophy],
+    ['rewards', 'Ödüller', Gift],
+    ['week', 'Haftalık Takip', CalendarDays],
+    ['profile', 'Profilim', User],
+  ];
+  return (
+    <aside className="sidebar">
+      <div className="brand">
+        <div className="brand-title">Elif Lina</div>
+        <div className="brand-sub">Günlük Sorumluluk</div>
+      </div>
+      <div className="avatar-card"><Character size="medium" /></div>
+      <div className="mode-toggle">
+        <button className={mode === 'child' ? 'active' : ''} onClick={() => setMode('child')}>Çocuk</button>
+        <button className={mode === 'parent' ? 'active' : ''} onClick={() => setMode('parent')}>Ebeveyn</button>
+      </div>
+      <nav className="side-nav">
+        {items.map(([id, text, Icon]) => (
+          <button key={id} onClick={() => setActive(id)} className={active === id ? 'active' : ''}>
+            <Icon size={18} /> <span>{text}</span>
+          </button>
+        ))}
+      </nav>
+      <div className="daily-target">
+        <Star fill="currentColor" />
+        <strong>Günlük hedef</strong>
+        <span>125 yıldız toplandı</span>
+        <button onClick={onLogout}>Çıkış Yap</button>
+      </div>
+    </aside>
+  );
+}
+
+function TopBar({ stats, mode, setMode }) {
+  return (
+    <header className="topbar">
+      <div>
+        <h1>Merhaba Elif Lina! 👋</h1>
+        <p>Bugün harika işler seni bekliyor.</p>
+      </div>
+      <div className="top-actions">
+        <span className="version">V2.0 Exact</span>
+        <div className="mini-stat"><Star fill="currentColor" size={18}/><strong>{stats.total}</strong><span>Toplam</span></div>
+        <div className="mini-stat"><ShieldCheck size={18}/><strong>4</strong><span>Seviye</span></div>
+        <div className="mini-stat"><Flame fill="currentColor" size={18}/><strong>7</strong><span>Seri</span></div>
+        <button className="bell"><Bell size={18}/><b>3</b></button>
+        <select value={mode} onChange={(e)=>setMode(e.target.value)}>
+          <option value="child">Çocuk Paneli</option>
+          <option value="parent">Ebeveyn Paneli</option>
+        </select>
+      </div>
+    </header>
+  );
+}
+
+function Hero({ stats }) {
+  return (
+    <section className="hero-panel">
+      <div className="hero-copy">
+        <span className="pill">Bugünün macerası başladı ✨</span>
+        <h2>Merhaba Elif Lina! Bugün yıldızları toplamaya hazır mısın?</h2>
+        <p>Görevlerini tamamla, macera haritasında ilerle ve sürpriz kutuya bir adım daha yaklaş.</p>
+        <div className="hero-buttons"><button>Görevlerime Git</button><button className="ghost">Haritayı Aç</button></div>
+      </div>
+      <div className="hero-character">
+        <Character size="large" />
+        <div className="floating-score score-a"><Star fill="currentColor"/> {stats.progress}%<span>İlerleme</span></div>
+        <div className="floating-score score-b">{stats.done}/5<span>Görev</span></div>
+        <div className="floating-score score-c">+{stats.today}<span>Yıldız</span></div>
+      </div>
+    </section>
+  );
+}
+
+function TaskList({ tasks, setTasks, compact = false }) {
+  const toggle = (id) => setTasks(tasks.map(t => t.id === id ? { ...t, done: !t.done } : t));
+  return (
+    <div className={`task-list ${compact ? 'compact' : ''}`}>
+      {tasks.map(task => (
+        <button key={task.id} className={`task-row ${task.done ? 'done' : ''}`} onClick={() => toggle(task.id)}>
+          <span className="task-icon">{task.icon}</span>
+          <span className="task-body"><b>{task.title}</b><small>{task.category}</small></span>
+          <span className="task-points">+{task.points} ⭐</span>
+          <span className="task-check">{task.done ? '✓' : ''}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Card({ title, action, children, className = '' }) {
+  return <section className={`card ${className}`}><div className="card-head"><h3>{title}</h3>{action && <button>{action}</button>}</div>{children}</section>;
+}
+
+function RewardsCard() {
+  return (
+    <Card title="Ödüller Dükkanı" action="Tümünü Gör" className="rewards-card">
+      {rewardList.map(r => <div className="reward-row" key={r.id}><span>{r.icon}</span><b>{r.title}</b><em>{r.stars} ⭐</em></div>)}
+    </Card>
+  );
+}
+
+function MiniGames() {
+  return (
+    <Card title="Mini Oyunlar" action="Tümünü Gör" className="games-card">
+      <div className="game-grid">
+        {miniGames.map(g => <div className={`game-card ${g.color}`} key={g.title}><span className="spark">✦</span><div className="game-icon">{g.icon}</div><b>{g.title}</b><small>{g.desc}</small><button>Oyna</button><em>{g.plus}⭐</em></div>)}
+      </div>
+    </Card>
+  );
+}
+
+function AdventureMap() {
+  return (
+    <Card title="Macera Haritası" action="Tümünü Gör" className="map-card">
+      <div className="map-world">
+        <div className="mountain">⛰️</div>
+        <div className="castle">🏰</div>
+        <div className="treasure">🎁</div>
+        <svg viewBox="0 0 600 250" className="path-svg" preserveAspectRatio="none">
+          <path d="M50 180 C120 100 190 210 260 145 C335 80 380 210 455 125 C510 70 540 90 570 55" />
+        </svg>
+        {[1,2,3,4,5].map((n,i)=><div key={n} className={`level-dot dot-${n}`}>{n}</div>)}
+      </div>
+      <div className="map-footer"><b>Seviye 5: Harika!</b><span>Sonraki hedef: 6. seviye</span><div><i style={{width:'62%'}} /></div></div>
+    </Card>
+  );
+}
+
+function WeeklySummary() {
+  const total = week.reduce((a,b)=>a+b.score,0);
+  return (
+    <Card title="Haftalık Özet" action="Tümünü Gör" className="week-card">
+      <div className="week-grid">{week.map(d=><div className="day" key={d.day}><Star size={18} fill="currentColor"/><b>{d.score}</b><small>{d.date}</small></div>)}</div>
+      <div className="week-total"><strong>{total} ⭐</strong><span>haftalık toplam</span></div>
+    </Card>
+  );
+}
+
+function ChildHome({ tasks, setTasks }) {
+  const stats = useMemo(() => {
+    const done = tasks.filter(t=>t.done).length;
+    const today = tasks.filter(t=>t.done).reduce((s,t)=>s+t.points,0);
+    return { done, today, progress: Math.round((done/tasks.length)*100), total: 125 + today };
+  }, [tasks]);
+  return (
+    <>
+      <TopBar stats={stats} mode="child" setMode={()=>{}} />
+      <Hero stats={stats} />
+      <main className="dashboard-grid exact-grid">
+        <Card title="Bugünkü İlerlemen" className="progress-card"><ProgressCircle value={stats.progress} label="İlerleme"/><div className="progress-text"><b>{stats.done} / 5 görev</b><span>tamamlandı</span></div></Card>
+        <Card title="Sürpriz Kutu" className="chest-card"><div className="chest-icon">💼</div><strong>25 / 30 yıldız</strong><div className="bar"><i style={{width:'84%'}} /></div><small>30 yıldız olduğunda kutunu aç!</small></Card>
+        <Card title="Günlük Motivasyon" className="motivation-card"><div className="unicorn">🦄</div><p>Küçük adımlar, büyük değişimler yaratır! 🌈</p></Card>
+        <RewardsCard />
+        <Card title="Bugünkü Görevlerin" action="Tümünü Gör" className="tasks-card"><TaskList tasks={tasks} setTasks={setTasks} /><div className="task-actions"><button>Tüm Görevleri Gör</button><button className="save-btn"><Save size={16}/> Kaydet</button></div></Card>
+        <MiniGames />
+        <AdventureMap />
+        <WeeklySummary />
+      </main>
+      <Benefits />
+      <BottomBanner />
+    </>
+  );
+}
+
+function Benefits() {
+  const benefits = [
+    ['🛡️','Sorumluluk Bilinci','Görevleri tamamla, alışkanlık kazan.'],
+    ['⭐','Motivasyon Artar','Yıldız ve ödüllerle motivasyon yükselir.'],
+    ['🎮','Eğlenceli Öğrenme','Oyunlarla öğrenmek daha keyifli.'],
+    ['⏰','Zaman Yönetimi','Planlı olmayı öğrenir.'],
+    ['🏆','Özgüven Gelişimi','Başardıkça kendine güvenir.'],
+    ['👨‍👩‍👧','Aile Bağı Güçlenir','Birlikte takip edin.'],
+  ];
+  return <div className="benefits">{benefits.map(b=><div key={b[1]}><span>{b[0]}</span><b>{b[1]}</b><small>{b[2]}</small></div>)}</div>;
+}
+
+function BottomBanner() {
+  return <div className="bottom-banner"><div><Trophy fill="currentColor"/><b>Elif Lina ile her gün daha iyiye!</b><span>Görevleri tamamla, yıldızlarını topla, ödülleri kazan.</span></div><button>Bugünü Kaydet</button></div>;
+}
+
+function FullScreen({ active, tasks, setTasks }) {
+  if (active === 'tasks') return <Page title="Görevler"><TaskList tasks={tasks} setTasks={setTasks}/></Page>;
+  if (active === 'games') return <Page title="Mini Oyunlar"><MiniGames /></Page>;
+  if (active === 'map') return <Page title="Macera Haritası"><AdventureMap /></Page>;
+  if (active === 'badges') return <Page title="Rozetler"><div className="badges-grid">{badges.map(b=><div className={`badge ${b.open?'':'locked'}`} key={b.name}><span>{b.icon}</span><b>{b.name}</b><small>{b.text}</small>{b.open ? <em>✓</em> : <Lock size={20}/>}</div>)}</div></Page>;
+  if (active === 'rewards') return <Page title="Ödüller Dükkanı"><RewardsCard /></Page>;
+  if (active === 'week') return <Page title="Haftalık Takip"><WeeklySummary /></Page>;
+  if (active === 'profile') return <Page title="Profilim"><Profile /></Page>;
+  return null;
+}
+
+function Page({ title, children }) { return <><TopBar stats={{total:125, progress:80, done:4, today:8}} mode="child" setMode={()=>{}}/><div className="page-panel"><h2>{title}</h2>{children}</div></>; }
+
+function Profile() {
+  return <div className="profile-card"><Character size="large"/><h3>Elif Lina</h3><span>Seviye 4</span><div className="bar"><i style={{width:'64%'}} /></div><p>Toplam Yıldız: 125</p><p>Günlük Seri: 7 gün</p><p>Açılan Rozet: 12</p></div>;
+}
+
+function ParentPanel({ tasks, setTasks }) {
+  const done = tasks.filter(t=>t.done).length;
+  const [title, setTitle] = useState('');
+  const add = () => { if(!title.trim()) return; setTasks([...tasks, { id: Date.now(), title, category:'Eğitim', points:2, icon:'📌', done:false, period:'Her gün'}]); setTitle(''); };
+  const remove = id => setTasks(tasks.filter(t=>t.id!==id));
+  return (
+    <>
+      <header className="parent-header"><div><Users/> <h1>Ebeveyn Yönetim Paneli</h1><p>Görev, ödül, performans ve rapor yönetimi</p></div><button><Download size={16}/> Raporu İndir</button></header>
+      <div className="parent-stats">
+        <div><b>{tasks.length}</b><span>Toplam Görev</span></div>
+        <div><b>{done}</b><span>Tamamlanan</span></div>
+        <div><b>%{Math.round(done/tasks.length*100)}</b><span>Tamamlanma</span></div>
+        <div><b>125</b><span>Toplam Yıldız</span></div>
+        <div><b>7</b><span>Günlük Seri</span></div>
+      </div>
+      <div className="parent-grid">
+        <section className="admin-card wide"><h3>Son 7 Gün Performansı</h3><div className="chart">{week.map(d=><div key={d.day}><span style={{height:`${d.score*4}px`}}/><small>{d.day}</small></div>)}</div></section>
+        <section className="admin-card"><h3>Görev Durumu</h3><ProgressCircle value={Math.round(done/tasks.length*100)} label="Tamam"/><p>{done} tamamlanan, {tasks.length-done} bekleyen</p></section>
+        <section className="admin-card wide"><div className="admin-head"><h3>Görev Yönetimi</h3><button onClick={add}><Plus size={16}/> Yeni Görev Ekle</button></div><div className="add-line"><input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Yeni görev adı"/><button onClick={add}>Ekle</button></div><table><thead><tr><th>Görev Adı</th><th>Kategori</th><th>Puan</th><th>Aktif</th><th>İşlem</th></tr></thead><tbody>{tasks.map(t=><tr key={t.id}><td>{t.icon} {t.title}</td><td>{t.category}</td><td>{t.points}</td><td><span className="switch on" /></td><td><Edit3 size={16}/><button className="icon-btn" onClick={()=>remove(t.id)}><Trash2 size={16}/></button></td></tr>)}</tbody></table></section>
+        <section className="admin-card"><h3>Ödül Yönetimi</h3>{rewardList.map(r=><div className="admin-reward" key={r.id}><span>{r.icon}</span><b>{r.title}</b><em>{r.stars}⭐</em></div>)}<button className="full-btn">+ Yeni Ödül Ekle</button></section>
+        <section className="admin-card"><h3>Hızlı Ayarlar</h3>{['Günlük Yıldız Limiti 50','Sürpriz Kutu Eşiği 30','Motivasyon Mesajları Açık','Haftalık Rapor e-posta'].map(x=><div className="setting-line" key={x}><span>{x}</span><span className="switch on"/></div>)}<button className="full-btn">Kaydet</button></section>
+      </div>
+    </>
+  );
+}
+
+function Login({ onLogin }) {
+  return <div className="login-page"><div className="login-left"><div className="logo-xl">Elif Lina</div><p>Günlük Sorumluluk + Oyunlaştırma Programı</p><Character size="xl"/><button onClick={()=>onLogin('child')}>Çocuk Girişi <ChevronRight size={18}/></button><button className="white" onClick={()=>onLogin('parent')}>Ebeveyn Girişi <ChevronRight size={18}/></button><button className="demo" onClick={()=>onLogin('child')}>Demo Olarak Dene</button></div><div className="login-right"><h2>Hoş Geldin! 👋</h2><p>Devam etmek için profil seç.</p>{['Elif Lina','Ali Efe','Zeynep'].map((p,i)=><button className={i===0?'selected':''} key={p}><Character size="tiny"/> <b>{p}</b><span>{i===0?'Seviye 4':'Örnek profil'}</span></button>)}<button className="add-profile">+ Yeni Profil Ekle</button><button className="start" onClick={()=>onLogin('child')}>Elif Lina ile Başla</button></div></div>
+}
 
 function App() {
-  const [tasks, setTasks] = useLocal('elif-v13-tasks', defaultTasks);
-  const [rewards, setRewards] = useLocal('elif-v13-rewards', defaultRewards);
-  const [history, setHistory] = useLocal('elif-v13-history', defaultHistory);
-  const [profile, setProfile] = useLocal('elif-v13-profile', { name:'Elif Lina', totalStars:125, level:4, xp:320, xpMax:500, streak:7, chest:25, chestMax:30, theme:'Mor/Pembe' });
-  const [session, setSession] = useLocal('elif-v13-session', { logged:false, role:'child' });
-  const [page, setPage] = useState('home');
-  const activeTasks = tasks.filter(t => t.active);
-  const doneTasks = activeTasks.filter(t => t.done);
-  const earned = doneTasks.reduce((s,t)=>s+Number(t.points||0),0);
-  const completion = pct(doneTasks.length, activeTasks.length);
-  const week = history.slice(-7);
-  const weeklyStars = week.reduce((s,h)=>s+Number(h.stars||0),0);
+  const [mode, setMode] = useStoredState('elif-v2-mode', 'child');
+  const [logged, setLogged] = useStoredState('elif-v2-logged', true);
+  const [active, setActive] = useState('home');
+  const [tasks, setTasks] = useStoredState('elif-v2-tasks', defaultTasks);
+  const [mobileNav, setMobileNav] = useState(false);
 
-  const toggleTask = (id) => {
-    const task = tasks.find(t=>t.id===id); if(!task) return;
-    const delta = task.done ? -task.points : task.points;
-    setTasks(list => list.map(t=> t.id===id ? {...t, done:!t.done} : t));
-    setProfile(p => ({...p, totalStars:Math.max(0,p.totalStars+delta), xp:Math.max(0,p.xp+delta*10), chest:Math.min(p.chestMax, Math.max(0,p.chest+delta))}));
-  };
-  const finishDay = () => {
-    const rec = {date:nowDate(), stars:earned, completed:doneTasks.length, total:activeTasks.length};
-    setHistory(list => [...list.filter(x=>x.date!==rec.date), rec].slice(-30));
-    setTasks(list => list.map(t=>({...t, done:false})));
-    setProfile(p => ({...p, streak: completion===100 ? p.streak+1 : 0}));
-    setPage('weekly');
-  };
+  if (!logged) return <Login onLogin={(m)=>{ setMode(m); setLogged(true); }} />;
 
-  if(!session.logged) return <Login onLogin={(role)=>setSession({logged:true, role})} />;
-  return <div className="shell">
-    <Sidebar role={session.role} setRole={(role)=>setSession({...session, role})} page={page} setPage={setPage} profile={profile} onLogout={()=>setSession({...session, logged:false})} />
-    <main className="main">
-      <Top profile={profile} role={session.role} setRole={(role)=>setSession({...session, role})} completion={completion} done={doneTasks.length} earned={earned} />
-      {session.role==='child'
-        ? <ChildDashboard page={page} setPage={setPage} tasks={activeTasks} rewards={rewards.filter(r=>r.active)} history={week} profile={profile} completion={completion} done={doneTasks.length} earned={earned} weeklyStars={weeklyStars} toggleTask={toggleTask} finishDay={finishDay} />
-        : <ParentDashboard tasks={tasks} rewards={rewards} history={history} profile={profile} setProfile={setProfile} completion={completion} done={doneTasks.length} earned={earned} weeklyStars={weeklyStars} setTasks={setTasks} setRewards={setRewards} finishDay={finishDay} />}
-    </main>
-  </div>;
+  return (
+    <div className="app-shell">
+      <button className="mobile-menu" onClick={()=>setMobileNav(true)}><Menu /></button>
+      <div className={mobileNav ? 'mobile-shade show' : 'mobile-shade'} onClick={()=>setMobileNav(false)} />
+      <div className={mobileNav ? 'sidebar-wrap show' : 'sidebar-wrap'}><button className="close-mobile" onClick={()=>setMobileNav(false)}><X/></button><Sidebar mode={mode} setMode={setMode} active={active} setActive={(id)=>{setActive(id); setMobileNav(false)}} onLogout={()=>setLogged(false)} /></div>
+      <main className="content-area">
+        {mode === 'parent' ? <ParentPanel tasks={tasks} setTasks={setTasks}/> : active === 'home' ? <ChildHome tasks={tasks} setTasks={setTasks}/> : <FullScreen active={active} tasks={tasks} setTasks={setTasks}/>} 
+      </main>
+    </div>
+  );
 }
-
-function Login({onLogin}) {
-  return <div className="login">
-    <section className="loginCard dark">
-      <div className="sparkles">✦ ★ ✧ ★ ✦</div><h1>Elif Lina</h1><p>Günlük Sorumluluk + Oyunlaştırma Programı</p><Avatar big />
-      <Button onClick={()=>onLogin('child')}>Çocuk Girişi →</Button><Button kind="white" onClick={()=>onLogin('parent')}>Ebeveyn Girişi →</Button>
-      <div className="trust"><span>🛡️ Güvenli</span><span>⭐ Motive</span><span>🏆 Ödüllü</span></div>
-    </section>
-    <section className="loginCard select">
-      <h2>Hoş Geldin! 👋</h2><p>Devam etmek için profil seç.</p>
-      {['Elif Lina','Ali Efe','Zeynep'].map((n,i)=><div className={`profile ${i===0?'active':''}`} key={n}>{i===0?<Avatar mini />:<span className="profileEmoji">{i===1?'👦🏻':'👧🏽'}</span>}<b>{n}</b><small>{i===0?'Seviye 4':'Örnek profil'}</small><em>›</em></div>)}
-      <Button kind="ghost">+ Yeni Profil Ekle</Button><Button onClick={()=>onLogin('child')}>Elif Lina ile Başla</Button>
-    </section>
-  </div>
-}
-function Sidebar({role,setRole,page,setPage,profile,onLogout}) {
-  const items = [['home','🏠','Ana Sayfa'],['tasks','✅','Görevler'],['games','🎮','Mini Oyunlar'],['map','🗺️','Macera Haritası'],['badges','🏅','Rozetler'],['rewards','🎁','Ödüller'],['weekly','📅','Haftalık'],['profile','👤','Profilim']];
-  return <aside className="side">
-    <div className="logo"><h2>Elif Lina</h2><small>Günlük Sorumluluk</small><Avatar /></div>
-    <div className="switch"><button className={role==='child'?'on':''} onClick={()=>setRole('child')}>Çocuk</button><button className={role==='parent'?'on':''} onClick={()=>setRole('parent')}>Ebeveyn</button></div>
-    <nav>{items.map(([id,ic,txt])=><button key={id} className={page===id?'active':''} onClick={()=>setPage(id)}><span>{ic}</span>{txt}</button>)}</nav>
-    <div className="goal"><b>⭐ Günlük hedef</b><small>{profile.totalStars} yıldız toplandı</small><button onClick={onLogout}>Çıkış Yap</button></div>
-  </aside>
-}
-function Top({profile,role,setRole,completion,done,earned}) {
-  return <header className="top"><div><h2>Merhaba {profile.name}! 👋</h2><p>Bugün harika işler seni bekliyor.</p></div><div className="topPills"><span className="version">V1.3 Ultra</span><Pill label="Toplam" value={profile.totalStars} icon="⭐"/><Pill label="Seviye" value={profile.level} icon="🛡️"/><Pill label="Seri" value={profile.streak} icon="🔥"/><Pill label="Bugün" value={`${done} / ${done+Math.max(0,5-done)}`} icon="✅"/><button className="roleBtn" onClick={()=>setRole(role==='child'?'parent':'child')}>{role==='child'?'Çocuk':'Ebeveyn'} Paneli⌄</button></div></header>
-}
-function Pill({icon,label,value}) { return <div className="pill"><span>{icon}</span><b>{value}</b><small>{label}</small></div> }
-
-function ChildDashboard({page,setPage,tasks,rewards,history,profile,completion,done,earned,weeklyStars,toggleTask,finishDay}) {
-  if(page==='tasks') return <Page title="Bugünkü Görevler"><TaskList tasks={tasks} toggleTask={toggleTask} full /><ActionBar finishDay={finishDay} /></Page>;
-  if(page==='games') return <Page title="Mini Oyunlar"><Games full /></Page>;
-  if(page==='map') return <Page title="Macera Haritası"><Adventure large profile={profile}/></Page>;
-  if(page==='badges') return <Page title="Rozetler ve Başarılar"><Badges /></Page>;
-  if(page==='rewards') return <Page title="Ödüller Dükkanı"><Rewards rewards={rewards} stars={profile.totalStars} /></Page>;
-  if(page==='weekly') return <Page title="Haftalık Takip"><Weekly history={history} weeklyStars={weeklyStars} large /></Page>;
-  if(page==='profile') return <Page title="Profilim"><Profile profile={profile} done={done} completion={completion}/></Page>;
-  return <div className="dashboard">
-    <Hero profile={profile} completion={completion} done={done} earned={earned} setPage={setPage}/>
-    <ProgressCard completion={completion} done={done} total={tasks.length}/><Chest profile={profile}/><Motivation/><RewardsCompact rewards={rewards} stars={profile.totalStars}/>
-    <TaskCard tasks={tasks} toggleTask={toggleTask} finishDay={finishDay}/><Games/><Adventure profile={profile}/><Weekly history={history} weeklyStars={weeklyStars}/>
-    <FeatureStrip/><div className="banner"><span>🏆</span><div><b>Elif Lina ile her gün daha iyiye!</b><small>Görevleri tamamla, yıldızları topla, ödülleri kazan.</small></div><Button kind="white" onClick={finishDay}>Bugünü Kaydet</Button></div>
-  </div>
-}
-function Hero({profile,completion,done,earned,setPage}) { return <section className="hero panel"><div><span className="tag">Bugünün macerası başladı ✨</span><h1>Merhaba {profile.name}! Bugün yıldızları toplamaya hazır mısın?</h1><p>Görevlerini tamamla, macera haritasında ilerle ve sürpriz kutuya bir adım daha yaklaş.</p><Button onClick={()=>setPage('tasks')}>Görevlerime Git</Button><Button kind="ghost" onClick={()=>setPage('map')}>Haritayı Aç</Button></div><div className="heroAvatar"><Avatar big/><div className="heroStats"><b>{completion}%</b><small>İlerleme</small><b>{done}/5</b><small>Görev</small><b>+{earned}</b><small>Yıldız</small></div></div></section> }
-function ProgressCard({completion,done,total}) { return <section className="panel stat"><h3>Bugünkü İlerlemen</h3><Ring value={completion}/><h2>{done} / {total} görev</h2><p>tamamlandı</p></section> }
-function Chest({profile}) { const v=pct(profile.chest,profile.chestMax); return <section className="panel chest"><h3>Sürpriz Kutu</h3><div className="bigIcon">🧰</div><b>{profile.chest} / {profile.chestMax} yıldız</b><div className="bar"><i style={{width:`${v}%`}} /></div><small>{profile.chestMax} yıldız olduğunda kutunu aç!</small></section> }
-function Motivation(){ return <section className="panel motivation"><h3>Günlük Motivasyon</h3><div className="unicorn">🦄</div><h2>Küçük adımlar, büyük değişimler yaratır! 🌈</h2></section> }
-function RewardsCompact({rewards,stars}){ return <section className="panel rewardCompact"><h3>Ödüller Dükkanı</h3>{rewards.map(r=><div className="rewardLine" key={r.id}><span>{r.icon}</span><b>{r.title}</b><em>{r.stars} ⭐</em></div>)}</section> }
-function TaskCard({tasks,toggleTask,finishDay}){ return <section className="panel tasks"><div className="head"><h3>Bugünkü Görevlerin</h3><button>Tümünü Gör</button></div><TaskList tasks={tasks} toggleTask={toggleTask}/><div className="taskActions"><Button kind="wide">Tüm Görevleri Gör</Button><Button kind="soft" onClick={finishDay}>Kaydet</Button></div></section> }
-function TaskList({tasks,toggleTask,full=false}){ return <div className={`taskList ${full?'full':''}`}>{tasks.map(t=><button key={t.id} className={`task ${t.done?'done':''}`} onClick={()=>toggleTask(t.id)}><span className="tIcon">{t.icon}</span><b>{t.title}</b><small>{t.category}</small><em>+{t.points} ⭐</em><i>{t.done?'✓':''}</i></button>)}</div> }
-function Games({full=false}){ return <section className={`panel games ${full?'full':''}`}><div className="head"><h3>Mini Oyunlar</h3><button>Tümünü Gör</button></div><div className="gameGrid">{games.map(g=><div className={`game ${g.color}`} key={g.title}><span>{g.icon}</span><b>{g.title}</b><small>{g.sub}</small><button>Oyna</button><em>{g.reward} ⭐</em></div>)}</div></section> }
-function Adventure({large=false,profile}) { return <section className={`panel adventure ${large?'large':''}`}><div className="head"><h3>Macera Haritası</h3><button>Tümünü Gör</button></div><div className="map"><span className="mount">⛰️</span><span className="castle">🏰</span><span className="sun">☀️</span><span className="tree t1">🌳</span><span className="tree t2">🌲</span><div className="path"></div>{[1,2,3,4,5].map((n,i)=><span className={`node n${n}`} key={n}>{n}</span>)}<span className="treasure">🎁</span></div><b>Seviye 5: Harika!</b><small>Sonraki hedef: 6. seviye</small><div className="bar"><i style={{width:`${pct(profile.xp,profile.xpMax)}%`}} /></div></section> }
-function Weekly({history,weeklyStars,large=false}){ return <section className={`panel weekly ${large?'large':''}`}><div className="head"><h3>Haftalık Özet</h3><button>Tümünü Gör</button></div><div className="weekGrid">{history.map(h=><div key={h.date}><span>⭐</span><b>{h.stars}</b><small>{trDate(h.date)}</small></div>)}</div><h2>{weeklyStars} ⭐</h2><p>haftalık toplam</p></section> }
-function Badges(){ return <div className="badges">{badges.map(b=><div className={`badge ${b.open?'':'locked'}`} key={b.title}><span>{b.icon}</span><b>{b.title}</b><small>{b.sub}</small></div>)}</div> }
-function Rewards({rewards,stars}){ return <div className="rewardShop">{rewards.map(r=><div className="shopItem" key={r.id}><span>{r.icon}</span><div><b>{r.title}</b><small>{r.stars} yıldız · {r.stock}</small></div><button disabled={stars<r.stars}>{stars>=r.stars?'Al':'Kilitli'}</button></div>)}</div> }
-function Profile({profile,done,completion}){ return <section className="panel profilePage"><Avatar big/><h2>{profile.name}</h2><p>Seviye {profile.level}</p><div className="profileStats"><Pill icon="⭐" label="Toplam" value={profile.totalStars}/><Pill icon="🔥" label="Seri" value={profile.streak}/><Pill icon="✅" label="Görev" value={done}/><Pill icon="📈" label="Başarı" value={`${completion}%`}/></div></section> }
-function Page({title,children}){ return <section className="page"><h1>{title}</h1>{children}</section> }
-function FeatureStrip(){ return <div className="features">{[['🛡️','Sorumluluk Bilinci','Görevleri tamamla, alışkanlık kazan.'],['⭐','Motivasyon Artar','Yıldız ve ödüllerle motivasyon yükselir.'],['🎮','Eğlenceli Öğrenme','Oyunlarla öğrenmek daha keyifli.'],['⏰','Zaman Yönetimi','Planlı olmayı öğrenir.'],['🏆','Özgüven Gelişimi','Başardıkça kendine güvenir.'],['👨‍👩‍👧','Aile Bağı Güçlenir','Birlikte takip edin.']].map(([i,t,s])=><div key={t}><span>{i}</span><b>{t}</b><small>{s}</small></div>)}</div> }
-function ActionBar({finishDay}){ return <div className="actionBar"><Button onClick={finishDay}>Bugünü Kaydet</Button></div> }
-
-function ParentDashboard({tasks,rewards,history,profile,setProfile,completion,done,earned,weeklyStars,setTasks,setRewards,finishDay}){
-  const [taskDraft,setTaskDraft] = useState({title:'', category:'Eğitim', points:2, icon:'⭐', repeat:'Her gün'});
-  const [rewardDraft,setRewardDraft] = useState({title:'', stars:10, icon:'🎁', stock:'Sınırsız'});
-  const addTask = (e)=>{e.preventDefault(); if(!taskDraft.title.trim())return; setTasks([{id:Date.now(),...taskDraft, done:false, active:true},...tasks]); setTaskDraft({title:'', category:'Eğitim', points:2, icon:'⭐', repeat:'Her gün'});};
-  const addReward = (e)=>{e.preventDefault(); if(!rewardDraft.title.trim())return; setRewards([{id:Date.now(),...rewardDraft, active:true},...rewards]); setRewardDraft({title:'', stars:10, icon:'🎁', stock:'Sınırsız'});};
-  return <div className="parent">
-    <section className="panel parentHero"><h1>Ebeveyn Yönetim Paneli</h1><p>Görevleri, ödülleri ve haftalık performansı tek yerden yönetin.</p></section>
-    <section className="kpis"><Pill icon="✅" label="Tamamlanan" value={`${done}/${tasks.filter(t=>t.active).length}`}/><Pill icon="📈" label="Başarı" value={`${completion}%`}/><Pill icon="⭐" label="Bugünkü" value={earned}/><Pill icon="🔥" label="Seri" value={profile.streak}/></section>
-    <section className="panel chart"><h3>Son 7 Gün Performansı</h3><div className="bars">{history.slice(-7).map(h=><div key={h.date}><i style={{height:`${Math.max(18,h.stars*3)}px`}}></i><small>{trDate(h.date)}</small></div>)}</div></section>
-    <section className="panel donut"><h3>Görev Durumu</h3><Ring value={completion}/><p>{done} görev tamamlandı</p></section>
-    <FormPanel title="Görev Ekle" onSubmit={addTask} draft={taskDraft} setDraft={setTaskDraft} type="task" />
-    <section className="panel table"><h3>Görev Yönetimi</h3>{tasks.map(t=><div className="row" key={t.id}><span>{t.icon}</span><b>{t.title}</b><small>{t.category} · +{t.points}</small><button onClick={()=>setTasks(tasks.filter(x=>x.id!==t.id))}>Sil</button></div>)}</section>
-    <FormPanel title="Ödül Ekle" onSubmit={addReward} draft={rewardDraft} setDraft={setRewardDraft} type="reward" />
-    <section className="panel table"><h3>Ödül Yönetimi</h3>{rewards.map(r=><div className="row" key={r.id}><span>{r.icon}</span><b>{r.title}</b><small>{r.stars} yıldız</small><button onClick={()=>setRewards(rewards.filter(x=>x.id!==r.id))}>Sil</button></div>)}</section>
-    <section className="panel settings"><h3>Hızlı Ayarlar</h3><label>Günlük Yıldız Limiti <input value="50" readOnly /></label><label>Sürpriz Kutu Eşiği <input value={profile.chestMax} onChange={e=>setProfile({...profile,chestMax:Number(e.target.value)||30})}/></label><Button onClick={finishDay}>Bugünü Kaydet</Button></section>
-  </div>
-}
-function FormPanel({title,onSubmit,draft,setDraft,type}){ return <form className="panel form" onSubmit={onSubmit}><h3>{title}</h3><input placeholder={type==='task'?'Görev adı':'Ödül adı'} value={draft.title} onChange={e=>setDraft({...draft,title:e.target.value})}/><div className="formLine"><input value={draft.icon} onChange={e=>setDraft({...draft,icon:e.target.value})}/>{type==='task'?<><select value={draft.category} onChange={e=>setDraft({...draft,category:e.target.value})}>{['Eğitim','Düzen','Bakım','Yardım','Spor','Manevi'].map(x=><option key={x}>{x}</option>)}</select><input type="number" value={draft.points} onChange={e=>setDraft({...draft,points:Number(e.target.value)||1})}/></>:<><input type="number" value={draft.stars} onChange={e=>setDraft({...draft,stars:Number(e.target.value)||10})}/><input value={draft.stock} onChange={e=>setDraft({...draft,stock:e.target.value})}/></>}</div><Button type="submit">Kaydet</Button></form> }
 
 createRoot(document.getElementById('root')).render(<App />);

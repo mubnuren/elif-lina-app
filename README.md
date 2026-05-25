@@ -1,30 +1,27 @@
-# Elif Lina - Günlük Sorumluluk Programı V1.3 Ultra
+# Elif Lina - V2.0 Exact Design Update
 
-Bu sürüm, daha hızlı ilerlemek için hazırlanmış geniş görsel revizyon paketidir.
+Bu paket, daha önce hazırlanan görsel tasarım kolajlarına daha yakın olacak şekilde yeniden kodlanmış V2.0 sürümüdür.
 
-## V1.3 Ultra yenilikleri
-
-- Ana ekran tamamen yeniden düzenlendi.
-- Daha büyük premium karşılama alanı eklendi.
-- Elif Lina avatarı ve sol menü daha güçlü hale getirildi.
-- Macera haritası daha renkli ve oyun hissi veren hale getirildi.
-- Mini oyun kartları güçlendirildi.
-- Görev, ödül, haftalık özet ve profil ekranları toparlandı.
-- Ebeveyn paneli daha profesyonel dashboard yapısına taşındı.
-- Mobil uyum iyileştirildi.
-- Eski localStorage verileriyle karışmaması için V1.3 kayıt anahtarları kullanıldı.
+## İçerik
+- Çocuk paneli
+- Ebeveyn paneli
+- Giriş ekranı
+- Görevler
+- Mini oyunlar
+- Macera haritası
+- Rozetler
+- Ödüller dükkanı
+- Haftalık takip
+- Mobil ekran uyumu
+- LocalStorage kayıt sistemi
 
 ## Yerelde çalıştırma
-
 ```bash
 npm install
 npm run dev
 ```
 
-## Yayına alma
-
-Vercel ayarları:
-
+## Vercel
 - Framework: Vite
 - Build Command: npm run build
 - Output Directory: dist
